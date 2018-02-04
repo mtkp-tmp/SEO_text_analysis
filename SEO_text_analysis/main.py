@@ -1,42 +1,44 @@
 from load_data import *
-
-vocab = 'абвгдеёжзийклмнопрстуфхцчшщъыьэюяАБВГДЁЕЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯ' \
+# без оптимизации
+sVocab = 'абвгдеёжзийклмнопрстуфхцчшщъыьэюяАБВГДЁЕЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯ' \
                 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'
 
 # 0. получить текст
-stext = getText()
+sText = getText()
 
 # 1. заменить символы переноса на пробелы
-ltext = list()
-ltext += [lit if ord(lit) != 10 else ' ' for lit in stext]
-stext = ''.join(ltext)
+lText = list()
+lText += [lit if ord(lit) != 10 else ' ' for lit in sText]
+sText = ''.join(lText)
 
 # 2. удалить лишние пробелы и разделить на слова
-lwords = stext.split()
-stext = ' '.join(lwords)
-bufwords = list()  # для сравнения изменений
-bufwords.extend(lwords)
+lWords = sText.split()
+sText = ' '.join(lWords)
 
 # 3. посчитать пробелы и буквы
-ispaces = 0
-ilits = 0
-for lit in stext:
-    if lit in vocab:
-        ilits += 1
+iSpaces = 0
+iLits = 0
+for lit in sText:
+    if lit in sVocab:
+        iLits += 1
     elif ord(lit) == 32:
-        ispaces += 1
+        iSpaces += 1
 
 # 4. удалить небуквы и неслова
-newlwords = list()
-newlwords = [word.lower() if word[len(word)-1] in vocab else word[0:-1].lower() for word in lwords]
+# lWords = [word.lower() if word[len(word)-1] in sVocab else word[0:-1].lower() for word in lWords] устраревший, не удалялись многоточия
+lWords = [word.lower() if (word[len(word)-1] in sVocab) & (word[0] in sVocab) else ''.join([w for w in word if w in sVocab]).lower() for word in lWords]
+lWords = [word for word in lWords if word != '']
+
+# 5. популярные слова
+lPopWords = list()
+
 
 # вывод
-for i in stext:
+for i in sText:
     print(i, ord(i))
-print(bufwords)
-print(newlwords)
+print(lWords)
 print()
-print('Символов:                ', len(stext))  # 156 прав
-print('Символов ( без пробелов):', len(stext) - ispaces)
-print('Букв:                    ', ilits)
-print('Слов:                    ', len(bufwords))
+print('Символов:                ', len(sText))
+print('Символов (без пробелов): ', len(sText) - iSpaces)
+print('Букв:                    ', iLits)
+print('Слов:                    ', len(lWords))
