@@ -30,7 +30,7 @@ lWords = [word for word in lWords if word != '']
 
 
 # 5. нахождение элементов списка с максимальным вхождением
-def fMaxIn(lSource):
+def getMaxIn(lSource):
     lPopWords = list()
     iPopWords = list()
     for word in lSource:
@@ -46,8 +46,8 @@ def fMaxIn(lSource):
     return [lPopWords[i] for i in range(0, len(lPopWords)) if iPopWords[i] == iCount], iCount
 
 
-lPopWords, iWordCount = fMaxIn(lWords)
-lPopLits, iLitCount = fMaxIn(''.join(sText.split()))
+lPopWords, iWordCount = getMaxIn(lWords)
+lPopLits, iLitCount = getMaxIn(''.join(sText.split()))
 
 # вывод
 print('Символов:                ', len(sText))
