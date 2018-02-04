@@ -4,7 +4,5 @@
 
 
 def getText():
-    print('Имя файла: ')
-    # file = open(input(), 'r')
-    file = open('text.txt', 'r')
-    return file.read()
+    # return open(input('Имя файла: '), 'r').read()
+    return open('text.txt', 'r').read()
