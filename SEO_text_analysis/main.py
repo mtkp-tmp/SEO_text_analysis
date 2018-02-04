@@ -25,20 +25,38 @@ for lit in sText:
         iSpaces += 1
 
 # 4. удалить небуквы и неслова
-# lWords = [word.lower() if word[len(word)-1] in sVocab else word[0:-1].lower() for word in lWords] устраревший, не удалялись многоточия
 lWords = [word.lower() if (word[len(word)-1] in sVocab) & (word[0] in sVocab) else ''.join([w for w in word if w in sVocab]).lower() for word in lWords]
 lWords = [word for word in lWords if word != '']
 
-# 5. популярные слова
-lPopWords = list()
 
+# 5. нахождение элементов списка с максимальным вхождением
+def fMaxIn(lSource):
+    lPopWords = list()
+    iPopWords = list()
+    for word in lSource:
+        if word in lPopWords:
+            iPopWords[lPopWords.index(word)] += 1
+        else:
+            lPopWords.append(word)
+            iPopWords.append(1)
+    iCount = 0
+    for i in iPopWords:
+        if i > iCount:
+            iCount = i
+    return [lPopWords[i] for i in range(0, len(lPopWords)) if iPopWords[i] == iCount], iCount
+
+
+lPopWords, iWordCount = fMaxIn(lWords)
+lPopLits, iLitCount = fMaxIn(''.join(sText.split()))
 
 # вывод
-for i in sText:
-    print(i, ord(i))
-print(lWords)
-print()
 print('Символов:                ', len(sText))
 print('Символов (без пробелов): ', len(sText) - iSpaces)
 print('Букв:                    ', iLits)
 print('Слов:                    ', len(lWords))
+print('Частые слова:')
+for word in lPopWords:
+    print(' ', word, '-', iWordCount)
+print('Частые буквы:')
+for lit in lPopLits:
+    print(' ', lit, '-', iLitCount)
