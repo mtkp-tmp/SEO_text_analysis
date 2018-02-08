@@ -3,6 +3,6 @@
 # output variable with text
 
 
-def getText(path):
+def getTextFromFile(path):
     # return open(input('Имя файла: '), 'r').read()
     return open(path, 'r').read()
