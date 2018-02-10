@@ -1,7 +1,6 @@
 from load_data import getTextFromFile
 
-vocab = 'абвгдеёжзийклмнопрстуфхцчшщъыьэюяАБВГДЁЕЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯ' \
-                'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'
+vocab = 'абвгдеёжзийклмнопрстуфхцчшщъыьэюяabcdefghijklmnopqrstuvwxyz'
 
 # подготовка текста: убираются знаки переноса и лишние пробелы
 def formatText(text):
@@ -9,7 +8,8 @@ def formatText(text):
 
 # буквы
 def getLettersCount(text):
-    return sum(text.count(let) for let in set(text) if let in vocab)
+    text = text.lower()
+    return sum([text.count(let) for let in set(text) if let in vocab])
 
 # пробелы
 def getSpaces(text):
@@ -27,7 +27,7 @@ def getWordCount(text):
 def getPopularLetters(text):
     text = text.lower()
     try:
-        maxCount = max(text.count(let) for let in set(text) if let in vocab)
+        maxCount = max([text.count(let) for let in set(text) if let in vocab])
     except ValueError:  # нет букв
         return 0, ['в тексте нет букв']
     else:
