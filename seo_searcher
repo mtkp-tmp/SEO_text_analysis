@@ -1,0 +1,26 @@
+import re
+from collections import Counter
+
+try:
+    x = open(input("Укажите путь к файлу для SEO анализа: "), "r")
+
+    str = x.read().lower()
+
+    n_of_symbls = re.findall(".|\n", str)
+    print("Количество символов текста(с пробелами, включая перенос строки): ", len(n_of_symbls))
+
+    n_of_symbls = re.findall("[^ \n]", str)
+    print("Количество символов текста(без пробелов): ", len(n_of_symbls))
+
+    n_of_chrs = re.findall("[A-Za-zА-Яа-я]", str)
+    print("Количество букв в тексте: ", len(n_of_chrs))
+
+    n_of_words = re.findall("[A-Za-zА-Яа-я]+", str)
+    print("Количество слов в тексте: ", len(n_of_words))
+
+    print("Cамая часто-встречающаяся буква: ", Counter(n_of_chrs).most_common(1)[0][0])
+    print("Cамое часто-встречающееся слово: ", Counter(n_of_words).most_common(1)[0][0])
+
+    x.close()
+except FileNotFoundError:
+    print("Ошибка! Файл не найден!")
