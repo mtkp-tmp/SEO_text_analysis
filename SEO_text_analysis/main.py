@@ -1,4 +1,5 @@
 from load_data import getTextFromFile
+import re
 
 vocab = 'абвгдеёжзийклмнопрстуфхцчшщъыьэюяabcdefghijklmnopqrstuvwxyz'
 
@@ -17,36 +18,28 @@ def getSpaces(text):
 
 # слова
 def getWordCount(text):
-    wordList = text.lower().split()
-    wordList = [word if (word[-1] in vocab) & (word[0] in vocab) else ''.join(
-        [w for w in word if w in vocab]) for word in wordList]
-    wordList = [word for word in wordList if word != '']
-    return len(wordList)
+    reg = re.compile('([^\.\s\,\;\:\!\?\'\"\{\}]+)')
+    return len([word for word in reg.findall(text.lower()) if word != '-'])
 
 # частые буквы
 def getPopularLetters(text):
     text = text.lower()
     try:
         maxCount = max([text.count(let) for let in set(text) if let in vocab])
+        return maxCount, [let for let in set(text) if text.count(let) == maxCount]
     except ValueError:  # нет букв
         return 0, ['в тексте нет букв']
-    else:
-        return maxCount, [let for let in set(text) if text.count(let) == maxCount]
+
 
 # частые слова
-def getPopularWords(text):  # второй метод
-    # форматирование слов: удаление запятых, многочий, тире и тд
-    # слова с дефисом не трогаются
-    wordList = text.lower().split()
-    wordList = [word if (word[-1] in vocab) & (word[0] in vocab) else ''.join(
-        [w for w in word if w in vocab]) for word in wordList]
-    wordList = [word for word in wordList if word != '']
+def getPopularWords(text):
+    reg = re.compile('([^\.\s\,\;\:\!\?\'\"\{\}]+)')
+    wordList = [word for word in reg.findall(text.lower()) if word != '-']
     try:
         maxCount = max([wordList.count(word) for word in set(wordList)])  # находим максимальное вхождение
+        return maxCount, [word for word in set(wordList) if wordList.count(word) == maxCount]
     except ValueError:  # нет слов
         return 0, ['в тексте нет слов']
-    else:
-        return maxCount, [word for word in set(wordList) if wordList.count(word) == maxCount]
 
 
 try:
