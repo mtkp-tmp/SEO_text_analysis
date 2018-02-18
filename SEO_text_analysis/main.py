@@ -1,5 +1,5 @@
 from load_data import getTextFromFile
-
+import re
 # подготовка текста: убираются знаки переноса и лишние пробелы
 class SEO_Analisys:
     vocab = 'абвгдеёжзийклмнопрстуфхцчшщъыьэюяabcdefghijklmnopqrstuvwxyz'
@@ -7,23 +7,22 @@ class SEO_Analisys:
     def __init__(self, t):
         self.text = t
 
+    # символов
     def Length(self):
         return len(self.text)
+
+    # символов без пробелов
+    def LengthWithoutSpaces(self):
+        return len(self.text) - self.text.count(' ')
 
     # буквы
     def LettersCount(self):
         text = self.text.lower()
         return sum([text.count(let) for let in set(text) if let in self.vocab])
 
-    # пробелы
-    def SpaceCount(self):
-        return self.text.count(' ')
-
     # количество слов
     def WordCount(self):
-        import re
-        reg = re.compile('([^\.\s\,\;\:\!\?\'\"\{\}]+)')
-        return len([word for word in reg.findall(self.text.lower()) if word != '-'])
+        return len(re.split('\W+', self.text)) - 1
 
     # частые буквы
     def FrequentLetters(self):
@@ -36,9 +35,7 @@ class SEO_Analisys:
 
     # частые слова
     def FrequentWords(self):
-        import re
-        reg = re.compile('([^\.\s\,\;\:\!\?\'\"\{\}]+)')
-        wordList = [word for word in reg.findall(self.text.lower()) if word != '-']
+        wordList = re.split('\W+', self.text.lower())
         try:
             maxCount = max([wordList.count(word) for word in set(wordList)])  # находим максимальное вхождение
             return maxCount, [word for word in set(wordList) if wordList.count(word) == maxCount]
@@ -54,7 +51,7 @@ except FileNotFoundError:
     print('Файла не существует!')
 else:
     print('Символов:                ', cText.Length())
-    print('Символов (без пробелов): ', cText.Length() - cText.SpaceCount())
+    print('Символов (без пробелов): ', cText.LengthWithoutSpaces())
     print('Букв:                    ', cText.LettersCount())
     print('Слов:                    ', cText.WordCount())
     print('Частые слова:')
@@ -66,3 +63,7 @@ else:
     for let in popularLetters:
         print(' ', countLetters, '-', let)
 
+
+ttt = 'Из-за шкафа показался бело-черный кот. Он странно выглядел. Он - я.'
+
+print(re.split('\W+', ttt))
