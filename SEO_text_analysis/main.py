@@ -1,11 +1,11 @@
 from load_data import getTextFromFile
 import re
-# подготовка текста: убираются знаки переноса и лишние пробелы
+
 class SEO_Analisys:
     vocab = 'абвгдеёжзийклмнопрстуфхцчшщъыьэюяabcdefghijklmnopqrstuvwxyz'
 
     def __init__(self, t):
-        self.text = t
+        self.text = t.replace('\n', ' ')
 
     # символов
     def Length(self):
@@ -17,12 +17,11 @@ class SEO_Analisys:
 
     # буквы
     def LettersCount(self):
-        text = self.text.lower()
-        return sum([text.count(let) for let in set(text) if let in self.vocab])
+        return len(re.findall('\w', self.text))
 
     # количество слов
     def WordCount(self):
-        return len(re.split('\W+', self.text)) - 1
+        return len([word for word in re.split('[^(\w+\-\w+)]', self.text.lower().replace(' - ', ' ')) if word != ''])
 
     # частые буквы
     def FrequentLetters(self):
@@ -34,8 +33,8 @@ class SEO_Analisys:
             return 0, ['в тексте нет букв']
 
     # частые слова
-    def FrequentWords(self):
-        wordList = re.split('\W+', self.text.lower())
+    def FrequentWords(self):                    # разделение слов с учётом дефисов
+        wordList = [word for word in re.split('[^(\w+\-\w+)]', self.text.lower().replace(' - ', ' ')) if word != '']
         try:
             maxCount = max([wordList.count(word) for word in set(wordList)])  # находим максимальное вхождение
             return maxCount, [word for word in set(wordList) if wordList.count(word) == maxCount]
@@ -44,12 +43,8 @@ class SEO_Analisys:
 
 
 FILENAME = 'text.txt'
-
 try:
     cText = SEO_Analisys(getTextFromFile(FILENAME))
-except FileNotFoundError:
-    print('Файла не существует!')
-else:
     print('Символов:                ', cText.Length())
     print('Символов (без пробелов): ', cText.LengthWithoutSpaces())
     print('Букв:                    ', cText.LettersCount())
@@ -62,8 +57,5 @@ else:
     print('Частые буквы:')
     for let in popularLetters:
         print(' ', countLetters, '-', let)
-
-
-ttt = 'Из-за шкафа показался бело-черный кот. Он странно выглядел. Он - я.'
-
-print(re.split('\W+', ttt))
+except FileNotFoundError:
+    print('Файла не существует!')
