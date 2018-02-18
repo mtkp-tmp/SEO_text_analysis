@@ -1,66 +1,68 @@
 from load_data import getTextFromFile
-import re
-
-vocab = 'абвгдеёжзийклмнопрстуфхцчшщъыьэюяabcdefghijklmnopqrstuvwxyz'
 
 # подготовка текста: убираются знаки переноса и лишние пробелы
-def formatText(text):
-    return ' '.join(text.split())
+class SEO_Analisys:
+    vocab = 'абвгдеёжзийклмнопрстуфхцчшщъыьэюяabcdefghijklmnopqrstuvwxyz'
 
-# буквы
-def getLettersCount(text):
-    text = text.lower()
-    return sum([text.count(let) for let in set(text) if let in vocab])
+    def __init__(self, t):
+        self.text = t
 
-# пробелы
-def getSpaces(text):
-    return text.count(' ')
+    def Length(self):
+        return len(self.text)
 
-# слова
-def getWordCount(text):
-    reg = re.compile('([^\.\s\,\;\:\!\?\'\"\{\}]+)')
-    return len([word for word in reg.findall(text.lower()) if word != '-'])
+    # буквы
+    def LettersCount(self):
+        text = self.text.lower()
+        return sum([text.count(let) for let in set(text) if let in self.vocab])
 
-# частые буквы
-def getPopularLetters(text):
-    text = text.lower()
-    try:
-        maxCount = max([text.count(let) for let in set(text) if let in vocab])
-        return maxCount, [let for let in set(text) if text.count(let) == maxCount]
-    except ValueError:  # нет букв
-        return 0, ['в тексте нет букв']
+    # пробелы
+    def SpaceCount(self):
+        return self.text.count(' ')
+
+    # количество слов
+    def WordCount(self):
+        import re
+        reg = re.compile('([^\.\s\,\;\:\!\?\'\"\{\}]+)')
+        return len([word for word in reg.findall(self.text.lower()) if word != '-'])
+
+    # частые буквы
+    def FrequentLetters(self):
+        text = self.text.lower()
+        try:
+            maxCount = max([text.count(let) for let in set(text) if let in self.vocab])
+            return maxCount, [let for let in set(text) if text.count(let) == maxCount]
+        except ValueError:  # нет букв
+            return 0, ['в тексте нет букв']
+
+    # частые слова
+    def FrequentWords(self):
+        import re
+        reg = re.compile('([^\.\s\,\;\:\!\?\'\"\{\}]+)')
+        wordList = [word for word in reg.findall(self.text.lower()) if word != '-']
+        try:
+            maxCount = max([wordList.count(word) for word in set(wordList)])  # находим максимальное вхождение
+            return maxCount, [word for word in set(wordList) if wordList.count(word) == maxCount]
+        except ValueError:  # нет слов
+            return 0, ['в тексте нет слов']
 
 
-# частые слова
-def getPopularWords(text):
-    reg = re.compile('([^\.\s\,\;\:\!\?\'\"\{\}]+)')
-    wordList = [word for word in reg.findall(text.lower()) if word != '-']
-    try:
-        maxCount = max([wordList.count(word) for word in set(wordList)])  # находим максимальное вхождение
-        return maxCount, [word for word in set(wordList) if wordList.count(word) == maxCount]
-    except ValueError:  # нет слов
-        return 0, ['в тексте нет слов']
-
+FILENAME = 'text.txt'
 
 try:
-    # sText = getTextFromFile(input('Имя файла: '))
-    sText = getTextFromFile('text.txt')
+    cText = SEO_Analisys(getTextFromFile(FILENAME))
 except FileNotFoundError:
     print('Файла не существует!')
 else:
-    if formatText(sText) != '':
-        sText = formatText(sText)
-        print('Символов:                ', len(sText))
-        print('Символов (без пробелов): ', len(sText) - getSpaces(sText))
-        print('Букв:                    ', getLettersCount(sText))
-        print('Слов:                    ', getWordCount(sText))
-        print('Частые слова:')
-        wordCount, popularWords = getPopularWords(sText)
-        for word in popularWords:
-            print(' ', wordCount, '-', word)
-        countLetters, popularLetters = getPopularLetters(sText)
-        print('Частые буквы:')
-        for let in popularLetters:
-            print(' ', countLetters, '-', let)
-    else:
-        print('Файл пуст или состоит только из пробелов!')
+    print('Символов:                ', cText.Length())
+    print('Символов (без пробелов): ', cText.Length() - cText.SpaceCount())
+    print('Букв:                    ', cText.LettersCount())
+    print('Слов:                    ', cText.WordCount())
+    print('Частые слова:')
+    wordCount, popularWords = cText.FrequentWords()
+    for word in popularWords:
+        print(' ', wordCount, '-', word)
+    countLetters, popularLetters = cText.FrequentLetters()
+    print('Частые буквы:')
+    for let in popularLetters:
+        print(' ', countLetters, '-', let)
+
