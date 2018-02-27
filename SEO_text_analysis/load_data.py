@@ -1,25 +1,17 @@
-import collections
-def file(text: str) -> str:
-inp = input("Название файла: ")
-f = open(inp, "r")
-s = f.read().lower()
-f.close()
-text = "Кол-во символов: %s" % str(len(s))
-text += "Кол-во символов (без пробелов): %s" % str(len(s.replace(" ", "")))
-letters_d = {}
-words = collections.Counter(s.split())
-text += "Кол-во слов: %s" % str(len(s.split()))
-for x in "абвгдеёжзийклмнопрстуфхцчшщъыьэюя":
-    letters_d[x] = 0
-for x in s:
-    if letters_d.get(x) != None:
-        letters_d[x] += 1
-search = sorted(letters_d.values())[-1]
-numb = 0
-for x in letters_d.values():
-    numb+=int(x)
-text += "Кол-во букв: %s" % str(numb)
-for x, y in letters_d.items():
-    if y == search:
-        text += "Часто встречающаяся буква: %s" % x
-text += "Часто встречающиеся слова: %s" % str(dict(words.most_common(10)))
+from re import compile, findall
+f = open(input("Введите путь к файлу для чтения "), "r")
+str = f.read()
+letters, count_let, max_let, count_w, max_w = len(str), 0, "", 0, ""
+for i in str :
+    if not i.isalpha(): letters -= 1 #вычитаем не буквы из всех символов
+print(str) #строка
+print(len(str)) #кол-во символов
+print(len(str.replace(' ', ''))) #кол-во символов без пробела
+print(letters) #кол-во букв
+print(len((compile(r'\w+')).findall(str))) #кол-во слов
+for let in "абвгдеёжзийклмнопрстуфхцчшщъыьэюяabcdefghijklmnopqrstuvwxyz" : #буква из строки
+    if count_let < (str.lower()).count(let): count_let, max_let = (str.lower()).count(let), let
+print(max_let) #самая встречающаяся буква
+for w in (compile(r'\w+')).findall(str):
+    if count_w < (compile(r'\w+')).findall(str).count(w): count_w, max_w = (compile(r'\w+')).findall(str).count(w), w #слово из всех слов
+print(max_w) #самое встречающееся слово
